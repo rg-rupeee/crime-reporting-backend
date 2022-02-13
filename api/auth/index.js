@@ -11,7 +11,4 @@ router.post("/login/verifyOTP", loginController.verifyOTP);
 router.post("/signup/sendOTP", signupController.sendOTP);
 router.post("/signup/verifyOTP", signupController.verifyOTP);
 
-router.post("/forgetPassword/sendOTP", forgetPasswordController.sendOTP);
-router.post("/forgetPassword/verifyOTP", forgetPasswordController.verifyOTP);
-
 module.exports = router;
