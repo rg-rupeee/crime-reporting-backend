@@ -8,7 +8,7 @@ const sosRoutes = require("./sos/index");
 const userRoutes = require("./users/index");
 const utilRoutes = require("./utils/index");
 
-router.get("/test", (req, res, next) => {
+router.get("/", (req, res, next) => {
 	res.json({
 		status: "success",
 		message: "Hello from server",
