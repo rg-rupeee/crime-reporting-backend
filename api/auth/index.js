@@ -3,7 +3,6 @@ const router = express.Router();
 
 const loginController = require("./controllers/loginController");
 const signupController = require("./controllers/signupController");
-const forgetPasswordController = require("./controllers/forgetPasswordController");
 
 router.post("/login/sendOTP", loginController.sendOTP);
 router.post("/login/verifyOTP", loginController.verifyOTP);

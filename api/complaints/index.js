@@ -4,9 +4,10 @@ const router = express.Router();
 const generalUserComplaintController = require("./controllers/generalUserComplaintController");
 const policeComplaintController = require("./controllers/policeComplaintController");
 const HQandAdminComplaintController = require("./controllers/HQandAdminComplaintController");
+const complaintController = require("./controllers/complaintController");
 
 // all role
-router.get("/nearby/:lat/:long", fadjdskljfalksdjfklj);
+router.get("/nearby/:lat/:long", complaintController.getNearbyComplaints);
 
 // user role
 router.post("/", generalUserComplaintController.createComplaint); //filters, sort
