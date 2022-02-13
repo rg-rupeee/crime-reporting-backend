@@ -15,11 +15,11 @@ router.get("/", (req, res, next) => {
 	});
 });
 
-router.route("/auth", authRoutes);
-router.route("/complaint", complaintRoutes);
-router.route("/contact", contactRoutes);
-router.route("/sos", sosRoutes);
-router.route("/user", userRoutes);
-router.route("/util", utilRoutes);
+router.use("/auth", authRoutes);
+router.use("/complaint", complaintRoutes);
+router.use("/contact", contactRoutes);
+router.use("/sos", sosRoutes);
+router.use("/user", userRoutes);
+router.use("/util", utilRoutes);
 
 module.exports = router;
