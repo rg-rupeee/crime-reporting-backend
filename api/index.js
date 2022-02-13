@@ -8,18 +8,18 @@ const sosRoutes = require("./sos/index");
 const userRoutes = require("./users/index");
 const utilRoutes = require("./utils/index");
 
-router.get("/", (req, res, next) => {
+router.get("/test", (req, res, next) => {
 	res.json({
 		status: "success",
 		message: "Hello from server",
 	});
 });
 
-router.route("/auth", authRoutes);
-router.route("/complaint", complaintRoutes);
-router.route("/contact", contactRoutes);
-router.route("/sos", sosRoutes);
-router.route("/user", userRoutes);
-router.route("/util", utilRoutes);
+router.use("/auth", authRoutes);
+router.use("/complaint", complaintRoutes);
+router.use("/contact", contactRoutes);
+router.use("/sos", sosRoutes);
+router.use("/user", userRoutes);
+router.use("/util", utilRoutes);
 
 module.exports = router;

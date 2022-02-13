@@ -1,5 +1,6 @@
 const dotenv = require("dotenv");
 const connectDB = require("./config/database");
+const cloudinary = require("./config/cloudinary");
 
 process.on("uncaughtException", (err) => {
 	console.log("UNCAUGHT EXCEPTION! Shutting down...");
@@ -13,6 +14,9 @@ const app = require("./app");
 
 // database connection
 connectDB();
+
+// configuring cloudinary
+cloudinary();
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
