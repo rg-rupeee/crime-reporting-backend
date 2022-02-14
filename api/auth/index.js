@@ -1,13 +1,23 @@
 const express = require("express");
 const router = express.Router();
 
-const loginController = require("./controllers/loginController");
-const signupController = require("./controllers/signupController");
+const twilioServiceController = require("./controllers/twilioServiceController");
+const userServiceController = require("./controllers/userServiceController");
 
-router.post("/login/sendOTP", loginController.sendOTP);
-router.post("/login/verifyOTP", loginController.verifyOTP);
+router.post("/sendOTP", twilioServiceController.sendOTP);
 
-router.post("/signup/sendOTP", signupController.sendOTP);
-router.post("/signup/verifyOTP", signupController.verifyOTP);
+router.post(
+	"/signup/verifyOTP",
+	twilioServiceController.verifyOTP,
+	userServiceController.createUser,
+	userServiceController.signJWT
+);
+
+router.post(
+	"/login/verifyOTP",
+	twilioServiceController.verifyOTP,
+	userServiceController.getUser,
+	userServiceController.signJWT
+);
 
 module.exports = router;

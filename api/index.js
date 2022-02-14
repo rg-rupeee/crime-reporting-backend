@@ -8,12 +8,7 @@ const sosRoutes = require("./sos/index");
 const userRoutes = require("./users/index");
 const utilRoutes = require("./utils/index");
 
-router.get("/", (req, res, next) => {
-	res.json({
-		status: "success",
-		message: "Hello from server",
-	});
-});
+router.use("/test", require("./utils/test"));
 
 router.use("/auth", authRoutes);
 router.use("/complaint", complaintRoutes);
