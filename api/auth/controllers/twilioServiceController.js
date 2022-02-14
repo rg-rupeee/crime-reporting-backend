@@ -1,12 +1,10 @@
+const twilio = require("twilio");
+
 const AppError = require("../../../utils/appError");
 const catchAsync = require("../../../utils/catchAsync");
-const twilio = require("twilio");
-const { promisify } = require("util");
-const User = require("../../../models/User");
 
 const client = twilio(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 
-// create and send otp using twilio
 exports.sendOTP = catchAsync(async (req, res, next) => {
 	const { phone } = req.body;
 
@@ -23,18 +21,21 @@ exports.sendOTP = catchAsync(async (req, res, next) => {
 			channel,
 		})
 		.then((data) => {
-			console.log(data);
-			return res.json(data);
+			// console.log(data);
+			return res.json({
+				status: "success",
+				message: "OTP sent successfully",
+				otp: data,
+			});
 		})
 		.catch((err) => {
 			console.log(err);
-			return res.status(400).json(err);
+			return res.status(400).json({ status: "fail", error: err });
 		});
 });
 
-// verify otp at twilio then send the signed jwt to user
 exports.verifyOTP = catchAsync(async (req, res, next) => {
-	const { phone, code, name } = req.body;
+	const { phone, code } = req.body;
 
 	if (!phone) {
 		return next(new AppError("Missing Field: phone", 400));
@@ -42,10 +43,6 @@ exports.verifyOTP = catchAsync(async (req, res, next) => {
 
 	if (!code) {
 		return next(new AppError("Missing Field: code", 400));
-	}
-
-	if (!name) {
-		return next(new AppError("Missing Field: name", 400));
 	}
 
 	client.verify
@@ -57,27 +54,13 @@ exports.verifyOTP = catchAsync(async (req, res, next) => {
 		.then((data) => {
 			console.log(data);
 			if (data.status === "approved") {
-				req.user = {
-					name,
-					phone,
-				};
+				req.otp = data;
 				return next();
 			}
-			return res.json(data);
+			return res.status(400).json(data);
 		})
 		.catch((err) => {
 			console.log(err);
-			return res.status(400).json(err);
+			return res.status(400).json({ status: "fail", error: err });
 		});
-});
-
-exports.createUser = catchAsync(async (req, res, next) => {
-	const user = await User.create({
-		name: req.user.name,
-		phone: req.user.phone,
-	});
-
-	return res.status(201).json({
-		user,
-	});
 });
