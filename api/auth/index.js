@@ -5,7 +5,11 @@ const loginController = require("./controllers/loginController");
 const signupController = require("./controllers/signupController");
 
 router.post("/login/sendOTP", loginController.sendOTP);
-router.post("/login/verifyOTP", loginController.verifyOTP);
+router.post(
+	"/login/verifyOTP",
+	loginController.verifyOTP,
+	loginController.createUser
+);
 
 router.post("/signup/sendOTP", signupController.sendOTP);
 router.post("/signup/verifyOTP", signupController.verifyOTP);
