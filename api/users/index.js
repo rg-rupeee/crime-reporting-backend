@@ -36,6 +36,20 @@ router.patch(
 	UserController.updatePoliceUser
 );
 
+// HQ - Admin - Police
+router.get(
+	"/user",
+	auth.protect,
+	auth.restrictTo("hq", "admin", "police"),
+	UserController.getUsers
+);
+router.get(
+	"/user/:id",
+	auth.protect,
+	auth.restrictTo("hq", "admin", "police"),
+	UserController.getUser
+);
+
 // admin role
 router.post(
 	"/create/hq",
@@ -69,7 +83,7 @@ router.patch(
 );
 
 // all
-router.patch("/update/me", UserController.updateProfile);
-router.patch("/update/me/aadahar", UserController.updateAadhar);
+router.patch("/update/me", auth.protect, UserController.updateMe);
+router.get("/me", auth.protect, UserController.getMe);
 
 module.exports = router;

@@ -73,7 +73,7 @@ exports.deletePoliceUser = catchAsync(async (req, res, next) => {
 
 	await User.findByIdAndDelete(id);
 
-	return res.status(201).json({
+	return res.status(200).json({
 		status: "success",
 	});
 });
@@ -93,7 +93,7 @@ exports.deleteHQUser = catchAsync(async (req, res, next) => {
 
 	await User.findByIdAndDelete(id);
 
-	return res.status(201).json({
+	return res.status(200).json({
 		status: "success",
 	});
 });
@@ -173,7 +173,10 @@ exports.updatePoliceUser = catchAsync(async (req, res, next) => {
 		return next(new AppError("can update only police user", 400));
 	}
 
-	const updated = await User.findByIdAndRemove(id, req.body);
+	const updated = await User.findByIdAndUpdate(id, req.body, {
+		new: true,
+		runValidators: true,
+	});
 
 	return res.json({
 		status: "success",
@@ -198,7 +201,10 @@ exports.updateHQUser = catchAsync(async (req, res, next) => {
 		return next(new AppError("can update only hq user", 400));
 	}
 
-	const updated = await User.findByIdAndRemove(id, req.body);
+	const updated = await User.findByIdAndUpdate(id, req.body, {
+		new: true,
+		runValidators: true,
+	});
 
 	return res.json({
 		status: "success",
@@ -206,5 +212,67 @@ exports.updateHQUser = catchAsync(async (req, res, next) => {
 	});
 });
 
-exports.updateProfile = catchAsync(async (req, res, next) => {});
-exports.updateAadhar = catchAsync(async (req, res, next) => {});
+exports.getUsers = catchAsync(async (req, res, next) => {
+	const role = "user";
+	const users = await User.find({ role });
+
+	return res.json({
+		status: "success",
+		data: users,
+	});
+});
+
+exports.getUser = catchAsync(async (req, res, next) => {
+	const { id } = req.params;
+
+	const user = await User.findById(id);
+
+	if (!user) {
+		return next(new AppError("user does not exists", 400));
+	}
+
+	if (user.role != "user") {
+		return next(new AppError("can get only normal user", 400));
+	}
+
+	return res.json({
+		status: "success",
+		data: user,
+	});
+});
+
+exports.updateMe = catchAsync(async (req, res, next) => {
+	if (req.body.role) {
+		return next(new AppError("Unexpected Field: role", 400));
+	}
+
+	if (req.body.phone) {
+		return next(new AppError("Unexpected Field: phone", 400));
+	}
+
+	console.log(req.body);
+	const updated = await User.findByIdAndUpdate(req.user.id, req.body, {
+		new: true,
+		runValidators: true,
+	});
+
+	return res.json({
+		status: "success",
+		data: updated,
+	});
+});
+
+exports.getMe = catchAsync(async (req, res, next) => {
+	const { id } = req.user;
+
+	const user = await User.findById(id);
+
+	if (!user) {
+		return next(new AppError("user does not exists", 400));
+	}
+
+	return res.json({
+		status: "success",
+		data: user,
+	});
+});
