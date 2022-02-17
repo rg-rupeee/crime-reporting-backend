@@ -10,7 +10,12 @@ const auth = require("../auth/middlewares/authMiddlewares");
 router.get("/nearby/:lat/:long", complaintController.getNearbyComplaints);
 
 // user role
-router.post("/", complaintController.createComplaint);
+router.post(
+	"/",
+	auth.protect,
+	auth.restrictTo("user"),
+	complaintController.createComplaint
+);
 router.get(
 	"/me",
 	auth.protect,
@@ -18,7 +23,12 @@ router.get(
 	generalUserComplaintController.getMyComplaint,
 	complaintController.getAllComplaints
 );
-router.get("/me/:id", generalUserComplaintController.getMyComplaint);
+router.get(
+	"/me/:id",
+	auth.protect,
+	auth.restrictTo("user"),
+	generalUserComplaintController.getMyComplaint
+);
 
 // police role
 router.get(
@@ -27,10 +37,18 @@ router.get(
 	auth.restrictTo("police"),
 	complaintController.getAllComplaints
 );
-router.get("/me/assigned/:id", policeComplaintController.getAssignedComplaint);
+router.get(
+	"/me/assigned/:id",
+	auth.protect,
+	auth.restrictTo("police"),
+	policeComplaintController.getAssignedComplaint
+);
 router.patch(
 	"/me/assigned/:id",
-	policeComplaintController.updateAssignedComplaint
+	auth.protect,
+	auth.restrictTo("police"),
+	policeComplaintController.updateAssignedComplaint,
+	complaintController.updateComplaint
 );
 
 // hq and admin role
