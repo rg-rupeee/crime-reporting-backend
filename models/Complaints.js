@@ -33,7 +33,7 @@ const complaintSchema = new mongoose.Schema(
 			type: String,
 			enum: ["Filed", "In Progress", "Closed"],
 		},
-		AssignedOfficer: {
+		assignedOfficer: {
 			type: mongoose.Schema.ObjectId,
 			ref: "User",
 		},
