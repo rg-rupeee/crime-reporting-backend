@@ -5,15 +5,7 @@ const User = require("../../../models/User");
 const AppError = require("../../../utils/appError");
 
 exports.createUser = catchAsync(async (req, res, next) => {
-	if (!req.body.phone) {
-		return next(new AppError("Missing Field: phone", 400));
-	}
-
 	let user = await User.findOne({ phone: req.body.phone });
-
-	if (!req.body.name) {
-		return next(new AppError("Missing Field: name", 400));
-	}
 
 	if (!user) {
 		user = await User.create({
@@ -30,10 +22,6 @@ exports.createUser = catchAsync(async (req, res, next) => {
 });
 
 exports.getUser = catchAsync(async (req, res, next) => {
-	if (!req.body.phone) {
-		return next(new AppError("Missing Field: phone", 400));
-	}
-
 	const user = await User.findOne({ phone: req.body.phone });
 
 	if (!user) {

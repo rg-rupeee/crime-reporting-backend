@@ -29,9 +29,10 @@ const complaintSchema = new mongoose.Schema(
 			description: String,
 		},
 		images: [String],
-		complaintStatus: {
+		status: {
 			type: String,
 			enum: ["Filed", "In Progress", "Closed"],
+			default: "Filed",
 		},
 		assignedOfficer: {
 			type: mongoose.Schema.ObjectId,

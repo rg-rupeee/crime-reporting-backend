@@ -1,17 +1,20 @@
 const catchAsync = require("../../../utils/catchAsync");
 
 exports.getAssignedComplaints = catchAsync(async (req, res, next) => {
-	req.query = {
-		assignedOfficer: req.user.id,
-	};
-	return next();
+	req.query.assignedOfficer = req.user.id;
+
+	next();
 });
 
-exports.getAssignedComplaint = catchAsync(async (req, res, next) => {
+exports.checkAssignedComplaint = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
 	const complaint = await Complaint.findOne({ _id: id });
 
-	if (complaint && complaint.assignedOfficer != req.user.id) {
+	if (
+		complaint &&
+		(!complaint.assignedOfficer ||
+			!complaint.assignedOfficer.equals(req.user.id))
+	) {
 		return next(
 			new AppError("Cannot access this complaint. Forbidden!!!", 400)
 		);
@@ -21,17 +24,4 @@ exports.getAssignedComplaint = catchAsync(async (req, res, next) => {
 		status: "success",
 		data: complaint,
 	});
-});
-
-exports.updateAssignedComplaint = catchAsync(async (req, res, next) => {
-	const { id } = req.params;
-	const complaint = await Complaint.findOne({ _id: id });
-
-	if (complaint && complaint.assignedOfficer != req.user.id) {
-		return next(
-			new AppError("Cannot access this complaint. Forbidden!!!", 400)
-		);
-	}
-
-	next();
 });
