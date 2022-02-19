@@ -22,7 +22,9 @@ exports.createUser = catchAsync(async (req, res, next) => {
 });
 
 exports.getUser = catchAsync(async (req, res, next) => {
-	const user = await User.findOne({ phone: req.body.phone });
+	const { phone } = req.body;
+
+	const user = await User.findOne({ phone });
 
 	if (!user) {
 		return next(new AppError("User does not exist! Please signup.", 400));
