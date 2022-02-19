@@ -10,6 +10,40 @@ const check = require("../../controllers/middlewares/check");
 // all role
 router.get("/nearby/:lat/:long", complaintController.getNearbyComplaints);
 
+// police role
+
+router.get(
+	"/me/assigned/:id",
+	auth.protect,
+	auth.restrictTo("police"),
+	policeComplaintController.checkAssignedComplaint,
+	complaintController.getComplaint
+);
+router.get(
+	"/me/assigned",
+	auth.protect,
+	auth.restrictTo("police"),
+	policeComplaintController.getAssignedComplaints,
+	complaintController.getAllComplaints
+);
+router.patch(
+	"/me/assigned/:id",
+	auth.protect,
+	auth.restrictTo("police"),
+	check.restrictedFields(
+		"title",
+		"description",
+		"user",
+		"crimeLocation",
+		"crimeLocationCoordinates",
+		"images",
+		"assignedOfficer"
+	),
+	check.requiredFields("status"),
+	policeComplaintController.checkAssignedComplaint,
+	complaintController.updateComplaint
+);
+
 // user role
 router.post(
 	"/",
@@ -35,39 +69,6 @@ router.get(
 	complaintController.getComplaint
 );
 
-// police role
-router.get(
-	"/me/assigned",
-	auth.protect,
-	auth.restrictTo("police"),
-	policeComplaintController.getAssignedComplaints,
-	complaintController.getAllComplaints
-);
-router.get(
-	"/me/assigned/:id",
-	auth.protect,
-	auth.restrictTo("police"),
-	policeComplaintController.checkAssignedComplaint,
-	complaintController.getComplaint
-);
-router.patch(
-	"/me/assigned/:id",
-	auth.protect,
-	auth.restrictTo("police"),
-	check.restrictedFields(
-		"title",
-		"description",
-		"user",
-		"crimeLocation",
-		"crimeLocationCoordinates",
-		"images",
-		"assignedOfficer"
-	),
-	check.requiredFields("status"),
-	policeComplaintController.checkAssignedComplaint,
-	complaintController.updateComplaint
-);
-
 // hq and admin role
 router.get(
 	"/",
@@ -85,6 +86,14 @@ router.patch(
 	"/:id",
 	auth.protect,
 	auth.restrictTo("hq", "admin"),
+	check.restrictedFields(
+		"title",
+		"description",
+		"user",
+		"crimeLocation",
+		"crimeLocationCoordinates",
+		"images"
+	),
 	complaintController.updateComplaint
 );
 
