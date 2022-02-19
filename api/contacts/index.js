@@ -1,20 +1,25 @@
 const express = require("express");
 const router = express.Router();
 
-const contactController = require("./controllers/HQandAdminContactsController");
 const generalContactController = require("./controllers/contactController");
 const auth = require("../auth/middlewares/authMiddlewares");
+const check = require("../../controllers/middlewares/check");
 
 // no restriction
-router.get("/", generalContactController.getAllContacts);
-router.get("/:id", generalContactController.getContact);
-router.get("/nearby/:lat/:long", generalContactController.getNearbyContacts);
+router.get("/", auth.protect, generalContactController.getAllContacts);
+router.get("/:id", auth.protect, generalContactController.getContact);
+router.get(
+	"/nearby/:lat/:long",
+	auth.protect,
+	generalContactController.getNearbyContacts
+);
 
 // hq and admin role
 router.post(
 	"/",
 	auth.protect,
 	auth.restrictTo("hq", "admin"),
+	check.requiredFields("stationName", "headName", "phone", "address"),
 	generalContactController.createContact
 );
 
