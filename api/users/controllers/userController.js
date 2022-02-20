@@ -1,62 +1,19 @@
 const catchAsync = require("../../../utils/catchAsync");
 const AppError = require("../../../utils/appError");
 const User = require("../../../models/User");
+const factory = require("../../../controllers/handlerFactory");
 
-exports.createPoliceUser = catchAsync(async (req, res, next) => {
-	if (req.body.role && req.body.role != "police") {
-		return next(new AppError("Unexpected Field: role", 400));
-	}
-
-	const { name, phone, address } = req.body;
-
-	if (!name) {
-		return next(new AppError("Missing Field: name", 400));
-	}
-
-	if (!phone) {
-		return next(new AppError("Missing Field: phone", 400));
-	}
-
-	const police = await User.create({
-		name,
-		phone,
-		role: "police",
-		address,
-	});
-
-	return res.status(201).json({
-		status: "success",
-		data: police,
-	});
+exports.preCreatePoliceUser = catchAsync(async (req, res, next) => {
+	req.body.role = "police";
+	next();
 });
+exports.createPoliceUser = factory.createOne(User);
 
-exports.createHQUser = catchAsync(async (req, res, next) => {
-	if (req.body.role && req.body.role != "hq") {
-		return next(new AppError("Unexpected Field: role", 400));
-	}
-
-	const { name, phone, address } = req.body;
-
-	if (!name) {
-		return next(new AppError("Missing Field: name", 400));
-	}
-
-	if (!phone) {
-		return next(new AppError("Missing Field: phone", 400));
-	}
-
-	const hq = await User.create({
-		name,
-		phone,
-		role: "hq",
-		address,
-	});
-
-	return res.status(201).json({
-		status: "success",
-		data: hq,
-	});
+exports.preCreateHQUser = catchAsync(async (req, res, next) => {
+	req.body.role = "hq";
+	next();
 });
+exports.createHQUser = factory.createOne(User);
 
 exports.deletePoliceUser = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
@@ -98,25 +55,23 @@ exports.deleteHQUser = catchAsync(async (req, res, next) => {
 	});
 });
 
-exports.getPoliceUsers = catchAsync(async (req, res, next) => {
-	const role = "police";
-	const users = await User.find({ role });
+exports.preGetPoliceUsers = catchAsync(async (req, res, next) => {
+	req.query = {
+		role: "police",
+	};
 
-	return res.json({
-		status: "success",
-		data: users,
-	});
+	next();
 });
+exports.getPoliceUsers = factory.getAll(User);
 
-exports.getHQUsers = catchAsync(async (req, res, next) => {
-	const role = "hq";
-	const users = await User.find({ role });
+exports.preGetHQUsers = catchAsync(async (req, res, next) => {
+	req.query = {
+		role: "hq",
+	};
 
-	return res.json({
-		status: "success",
-		data: users,
-	});
+	next();
 });
+exports.getHQUsers = factory.getAll(User);
 
 exports.getPoliceUser = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
@@ -212,15 +167,13 @@ exports.updateHQUser = catchAsync(async (req, res, next) => {
 	});
 });
 
-exports.getUsers = catchAsync(async (req, res, next) => {
-	const role = "user";
-	const users = await User.find({ role });
-
-	return res.json({
-		status: "success",
-		data: users,
-	});
+exports.preGetUsers = catchAsync(async (req, res, next) => {
+	req.query = {
+		role: "user",
+	};
+	next();
 });
+exports.getUsers = factory.getAll(User);
 
 exports.getUser = catchAsync(async (req, res, next) => {
 	const { id } = req.params;
@@ -242,14 +195,6 @@ exports.getUser = catchAsync(async (req, res, next) => {
 });
 
 exports.updateMe = catchAsync(async (req, res, next) => {
-	if (req.body.role) {
-		return next(new AppError("Unexpected Field: role", 400));
-	}
-
-	if (req.body.phone) {
-		return next(new AppError("Unexpected Field: phone", 400));
-	}
-
 	console.log(req.body);
 	const updated = await User.findByIdAndUpdate(req.user.id, req.body, {
 		new: true,
@@ -276,3 +221,7 @@ exports.getMe = catchAsync(async (req, res, next) => {
 		data: user,
 	});
 });
+
+exports.getAllUsers = factory.getAll(User);
+
+exports.getAllUser = factory.getOne(User);
