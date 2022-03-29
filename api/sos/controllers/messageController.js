@@ -5,19 +5,15 @@ const catchAsync = require("../../../utils/catchAsync");
 const client = twilio(process.env.ACCOUNT_SID, process.env.AUTH_TOKEN);
 
 exports.sendMessage = catchAsync(async (req, res, next) => {
-	const { message, phone } = req.body.message;
+	const { message, phone } = req.body;
 
-	client.messages
-		.create({ body: message, from: "+918223088814", to: phone })
-		.then((message) => {
-			return res.json({
-				status: "success",
-				message: "message sent successfully",
-				data: message,
-			});
-		})
-		.catch((err) => {
-			console.log(err);
-			return res.status(400).json({ status: "fail", error: err });
-		});
+	const destinationNumber = phone;
+	const messageConfig = {
+		body: message,
+		from: process.env.TWILIO_NUMBER,
+		to: destinationNumber,
+	};
+	const data = await client.messages.create(messageConfig);
+
+	return res.json({ data });
 });

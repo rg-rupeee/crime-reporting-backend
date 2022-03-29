@@ -7,10 +7,10 @@ const check = require("../../controllers/middlewares/check");
 
 // general and police
 router.post(
-	"/",
+	"/sendmessage",
 	auth.protect,
 	auth.restrictTo("user", "police"),
-	check.requiredFields("message"),
+	check.requiredFields("message", "phone"),
 	messageController.sendMessage
 );
 
