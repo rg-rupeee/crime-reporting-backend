@@ -19,7 +19,13 @@ router.post(
 	"/",
 	auth.protect,
 	auth.restrictTo("hq", "admin"),
-	check.requiredFields("stationName", "headName", "phone", "address"),
+	check.requiredFields(
+		"stationName",
+		"headName",
+		"phone",
+		"address",
+		"coordinates"
+	),
 	generalContactController.createContact
 );
 

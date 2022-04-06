@@ -48,6 +48,8 @@ const complaintSchema = new mongoose.Schema(
 	}
 );
 
+complaintSchema.index({ crimeLocationCoordinates: "2dsphere" });
+
 const Complaint = mongoose.model("Complaint", complaintSchema);
 
 module.exports = Complaint;

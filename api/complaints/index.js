@@ -9,9 +9,9 @@ const check = require("../../controllers/middlewares/check");
 
 // all role
 router.get("/nearby/:lat/:long", complaintController.getNearbyComplaints);
+router.get("/all", complaintController.getAllComplaints);
 
 // police role
-
 router.get(
 	"/me/assigned/:id",
 	auth.protect,
@@ -50,7 +50,12 @@ router.post(
 	auth.protect,
 	auth.restrictTo("user"),
 	check.restrictedFields("assignedOfficer", "headquater", "status"),
-	check.requiredFields("title", "description", "crimeLocation"),
+	check.requiredFields(
+		"title",
+		"description",
+		"crimeLocation",
+		"crimeLocationCoordinates"
+	),
 	generalUserComplaintController.createComplaint,
 	complaintController.createComplaint
 );

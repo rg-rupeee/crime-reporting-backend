@@ -30,6 +30,8 @@ const policeContactSchema = new mongoose.Schema({
 	},
 });
 
+policeContactSchema.index({ coordinates: "2dsphere" });
+
 const PoliceContact = mongoose.model("PoliceContact", policeContactSchema);
 
 module.exports = PoliceContact;
